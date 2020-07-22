@@ -1,0 +1,21 @@
+parameters:
+  circle_token_environment_variable_name:
+    description: Name of the environment variable that holds the CircleCI API token
+    type: string
+    default: CIRCLE_TOKEN
+  run_command:
+    description: Command to run once job is complete
+    type: string
+  _script_source:
+    description: The base source of the Orb scripts
+    type: string
+    default: <<include(scripts/source.sh)>>
+docker:
+  - image: cimg/base:2020.01
+steps:
+  - run:
+      name: Waiting for Pipeline to complete
+      command:
+        << parameters._script_source >>
+
+        check_for_the_end_of_the_workflow ${<< parameters.circle_token_environment_variable_name >>} ${CIRCLE_WORKFLOW_ID} ${CIRCLE_BUILD_NUM} '<< parameters.run_command >>'
