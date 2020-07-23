@@ -65,9 +65,7 @@ _check_for_the_end__check_job_statuses () {
     fi
   done
 
-  echo "Running: $execute"
   eval $execute
-  return 0;
 }
 
 check_for_the_end_of_the_pipeline () {

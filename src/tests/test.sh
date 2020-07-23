@@ -76,13 +76,12 @@ setup () {
 
   job_number=1086
 
-  _check_for_the_end__fetch_job_statuses mock_curl 123 $job_number 987
-  #[[ $(_check_for_the_end__fetch_job_statuses mock_curl 123 $job_number 987) == 'success success success' ]]
+  [[ $(_check_for_the_end__fetch_job_statuses mock_curl 123 $job_number 987) == 'success success' ]]
 }
 
 @test "Check Job Statuses" {
   comm='echo testing'
-  data='success success success'
+  data='success failed success'
 
   [[ $(_check_for_the_end__check_job_statuses "$data" "$comm") == "testing" ]]
 
