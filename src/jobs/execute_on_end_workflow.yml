@@ -14,7 +14,7 @@ docker:
   - image: cimg/base:2020.01
 steps:
   - run:
-      name: Waiting for Pipeline to complete
+      name: Waiting for Workflow to complete
       command:
         << parameters._script_source >>
 

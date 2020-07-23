@@ -3,7 +3,7 @@ _check_for_the_end__fetch_workflow_ids () {
   local pipeline_id=$2
   local token=$3
 
-  workflows_resp=$(eval "${curl} 'https://circleci.com/api/v2/pipeline/'${pipeline_id}'/workflow?circle-token='${token}")
+  workflows_resp=$(eval $curl -s "https://circleci.com/api/v2/pipeline/${pipeline_id}/workflow?circle-token=${token}")
 
   if [[ $workflows_resp == "" ]] ; then
     echo "Unable to download workflows"
@@ -18,7 +18,7 @@ _check_for_the_end__fetch_workflow_ids () {
   fi
 
   while [[ $next_page_token != "null" && $next_page_token != "" ]] ; do
-    workflows_resp=$(eval $curl "https://circleci.com/api/v2/pipeline/${pipeline_id}/workflow?circle-token=${token}")
+    workflows_resp=$(eval $curl -s "https://circleci.com/api/v2/pipeline/${pipeline_id}/workflow?circle-token=${token}")
     workflow_ids="${workflow_ids} $(echo $workflows_resp | jq -r '.items[] | .id')"
     next_page_token=$(echo $workflows_resp | jq -r '.next_page_token')
   done
@@ -33,7 +33,7 @@ _check_for_the_end__fetch_job_statuses () {
   local token=$4
 
   for workflow_id in $workflow_ids ; do
-    jobs_resp=$(eval $curl "https://circleci.com/api/v2/workflow/${workflow_id}/job?circle-token=${token}")
+    jobs_resp=$(eval $curl -s "https://circleci.com/api/v2/workflow/${workflow_id}/job?circle-token=${token}")
 
     # Filter out the active job and the other running jobs
     job_statuses=$(echo $jobs_resp | jq -r ".items[] | (select((has(\"job_number\") | not) or (.job_number | contains(${self_job_num}) | not))) | .status")
@@ -65,6 +65,7 @@ _check_for_the_end__check_job_statuses () {
     fi
   done
 
+  echo "Running: $execute"
   eval $execute
   return 0;
 }
@@ -81,6 +82,7 @@ check_for_the_end_of_the_pipeline () {
     result=$(_check_for_the_end__check_job_statuses "$(_check_for_the_end__fetch_job_statuses curl "$(_check_for_the_end__fetch_workflow_ids curl $pipeline_id $token)" $self_job_num $token)" $execute)
   done
 
+  echo "Pipeline finished"
   echo $result
 }
 
@@ -96,5 +98,6 @@ check_for_the_end_of_the_workflow () {
     result=$(_check_for_the_end__check_job_statuses "$(_check_for_the_end__fetch_job_statuses curl $workflow_id $self_job_num $token)" $execute)
   done
 
+  echo "Worflow Finished"
   echo $result
 }
