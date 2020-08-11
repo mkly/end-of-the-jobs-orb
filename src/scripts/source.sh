@@ -77,7 +77,9 @@ check_for_the_end_of_the_pipeline () {
   result="Jobs still running"
   while [[ $result == "Jobs still running" ]] ; do
     sleep 5
-    result=$(_check_for_the_end__check_job_statuses "$(_check_for_the_end__fetch_job_statuses curl "$(_check_for_the_end__fetch_workflow_ids curl $pipeline_id $token)" $self_job_num $token)" $execute)
+    workflow_ids=$(_check_for_the_end__fetch_workflow_ids curl $pipeline_id $token)
+    job_statuses=$(_check_for_the_end__fetch_job_statuses curl $workflow_id $self_job_num $token) 
+    result=$(_check_for_the_end__check_job_statuses $job_statuses $execute)
   done
 
   echo "Pipeline finished"
@@ -93,7 +95,8 @@ check_for_the_end_of_the_workflow () {
   result="Jobs still running"
   while [[ $result == "Jobs still running" ]] ; do
     sleep 5
-    result=$(_check_for_the_end__check_job_statuses "$(_check_for_the_end__fetch_job_statuses curl $workflow_id $self_job_num $token)" $execute)
+    job_statuses=$(_check_for_the_end__fetch_job_statuses curl $workflow_id $self_job_num $token)
+    result=$(_check_for_the_end__check_job_statuses $job_statuses $execute)
   done
 
   echo "Worflow Finished"

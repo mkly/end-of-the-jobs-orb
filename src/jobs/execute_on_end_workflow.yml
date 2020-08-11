@@ -15,7 +15,7 @@ docker:
 steps:
   - run:
       name: Waiting for Workflow to complete
-      command:
+      command: |
         << parameters._script_source >>
 
         check_for_the_end_of_the_workflow ${<< parameters.circle_token_environment_variable_name >>} ${CIRCLE_WORKFLOW_ID} ${CIRCLE_BUILD_NUM} '<< parameters.run_command >>'
