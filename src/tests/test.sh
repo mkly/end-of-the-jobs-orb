@@ -80,10 +80,9 @@ setup () {
 }
 
 @test "Check Job Statuses" {
-  comm='echo testing'
   data='success failed success'
 
-  [[ $(_check_for_the_end__check_job_statuses "$data" "$comm") == "testing" ]]
+  [[ $(_check_for_the_end__check_job_statuses "$data") == "" ]]
 
 }
 
