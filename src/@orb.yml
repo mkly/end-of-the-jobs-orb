@@ -1,6 +1,6 @@
 version: 2.1
 
-description: Run at the end of all jobs in a workflow or pipeline
+description: Run at the end of all jobs in a workflow
 
 display:
   source_url: https://github.com/mkly/end-of-the-jobs-orb
